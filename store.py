@@ -1,5 +1,4 @@
 import products
-import cart
 
 class Store:
     """
