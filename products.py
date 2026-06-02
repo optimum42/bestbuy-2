@@ -18,6 +18,13 @@ class Product:
         self.quantity = quantity
 
         self.active = True
+        self.promotion = None
+
+    def get_promotion(self):
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        self.promotion = promotion
 
     def get_quantity(self):
         return self.quantity
@@ -40,7 +47,11 @@ class Product:
         self.active = False
 
     def show(self):
-        print(f"{self.name}, Price: ${self.price:,.2f}, Quantity: {self.quantity:,.0f}")
+        promo_text = ""
+        if self.promotion is not None:
+            promo_text = f" (Promotion: {self.promotion.name})"
+        print(f"{self.name}, Price: ${self.price:,.2f}, "
+              f"Quantity: {self.quantity:,.0f}{promo_text}")
 
     def check_quantity(self, quantity):
         """ Verifies if the quantity as allowed to be bought """
@@ -56,6 +67,12 @@ class Product:
         self.quantity -= quantity
         if self.quantity == 0:
             self.active = False
+
+        # If a promotion exists, use it to calculate the price.
+        # Otherwise, calculate normally.
+        if self.promotion:
+            return self.promotion.apply_promotion(self, quantity)
+
         return quantity * self.price
 
 
@@ -80,14 +97,22 @@ class NonStockedProduct(Product):
     def buy(self, quantity):
         self.check_quantity(quantity)
 
+        # Apply promotion if exists, otherwise normal price calculation
+        if self.promotion:
+            return self.promotion.apply_promotion(self, quantity)
+
         # skip the quantity subtraction and active status checks
         # because this product has infinite digital stock.
         return quantity * self.price
 
     def show(self):
         # Overriding to show it's a non-stocked item
-        print(
-            f"{self.name}, Price: ${self.price:,.2f}, Quantity: Unlimited (Non-Stocked)")
+
+        promo_text = ""
+        if self.promotion is not None:
+            promo_text = f" (Promotion: {self.promotion.name})"
+        print(f"{self.name}, Price: ${self.price:,.2f}, "
+              f"Quantity: Unlimited (Non-Stocked){promo_text}")
 
 
 class LimitedProduct(Product):
