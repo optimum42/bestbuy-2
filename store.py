@@ -29,11 +29,10 @@ class Store:
         for product, quantity in cart.products.items():
             if product not in self.get_all_products():
                 raise ValueError(f"{product.name}: Product not available")
-            if quantity <= 0:
-                raise ValueError(f"{product.name}: Quantity must be greater than 0")
-            if quantity > product.get_quantity():
-                raise ValueError(f"{product.name}: {quantity:,.0f} exceeds the maximum quantity of {product.get_quantity():,.0f}")
+
+            # all quantity checks take place in the product classes
             total_amount += product.buy(quantity)
+
         return total_amount
 
 
