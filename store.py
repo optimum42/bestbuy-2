@@ -32,21 +32,26 @@ class Store:
         return Store(new_store_name, combined_products)
 
     def add_product(self, product):
+        """ Adds a product to the store """
         self.product_list.append(product)
 
     def remove_product(self, product):
+        """ Removes a product from the store """
         self.product_list.remove(product)
 
     def get_total_quantity(self):
+        """ Returns the total quantity of the store """
         total = 0
         for product in self.product_list:
             total += product.get_quantity()
         return total
 
     def get_all_products(self):
+        """ Returns a list of all products in the store """
         return [product for product in self.product_list if product.is_active()]
 
     def order(self, cart):
+        """ Proceeds an order to the store """
         total_amount = 0
         for product, quantity in cart.products.items():
 

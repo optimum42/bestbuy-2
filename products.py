@@ -1,4 +1,3 @@
-
 class Product:
     """
     The product class that holds the product name, price, and quantity
@@ -48,9 +47,15 @@ class Product:
         return self.price < other.price
 
     def get_promotion(self):
+        """
+        Returns the promotion of the product or None if there is no promotion
+        """
         return self.promotion
 
     def set_promotion(self, promotion):
+        """
+        Sets a new promotion for the product
+        """
         self.promotion = promotion
 
     def get_quantity(self):
@@ -79,9 +84,14 @@ class Product:
             raise ValueError(f"{self.name}: Quantity must be greater than 0")
         if quantity > self.quantity:
             raise ValueError(
-                f"{self.name}: {quantity:,.0f} exceeds the maximum quantity of {self.quantity:,.0f}")
+                f"{self.name}: {quantity:,.0f} "
+                f"exceeds the maximum quantity of {self.quantity:,.0f}")
 
     def buy(self, quantity):
+        """
+        Calculates the checkout price and reduces the quantity
+        Promotions can reduce the price
+        """
         self.check_quantity(quantity)
 
         self.quantity -= quantity
@@ -101,7 +111,6 @@ class NonStockedProduct(Product):
     Non-physical products like software licenses.
     Quantity is always 0 and does not decrease upon purchase.
     """
-
     def __init__(self, name, price):
         # We pass a dummy quantity (1) to super() to bypass the parent's
         # quantity <= 0 validation, and then immediately set it to 0.
@@ -115,7 +124,6 @@ class NonStockedProduct(Product):
             promo_text = f" (Promotion: {self.promotion.name})"
         return(f"{self.name}, Price: ${self.price:,.2f}, "
                f"Quantity: Unlimited (Non-Stocked){promo_text}")
-
 
     def check_quantity(self, quantity):
         # Digitale Produkte haben unendlich viel "Bestand".
@@ -139,7 +147,6 @@ class LimitedProduct(Product):
     """
     Products that have a maximum purchase limit per order.
     """
-
     def __init__(self, name, price, quantity, maximum):
         super().__init__(name, price, quantity)
         self.maximum = maximum

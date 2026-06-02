@@ -3,7 +3,6 @@ class Cart:
     The Cart class that holds all products in the shopping cart
     and manages the addition, removal, and total price of the products
     """
-
     def __init__(self, new_products=None):
         new_products = new_products or {}
         self.products = new_products
@@ -12,6 +11,7 @@ class Cart:
         return not self.products
 
     def add_product(self, product, quantity=1):
+        """ Adds a product to the cart """
         if not product.is_active():
             raise ValueError(f"{product.name}: Product not available")
 
@@ -32,6 +32,7 @@ class Cart:
             self.products[product] = total_quantity
 
     def show(self):
+        """ Prints the cart """
         if not self.products:
             print("*** Your cart is empty!")
             return
@@ -51,6 +52,7 @@ class Cart:
                 f"{quantity:,.0f} {product.name} (${product.price:,.2f}){promo_text} = ${line_price:,.2f}")
 
     def get_total_price(self):
+        """ Returns the total price of the cart """
         total_price = 0
         for product, quantity in self.products.items():
             # Die Gesamtsumme muss die Promotions berücksichtigen
