@@ -30,8 +30,7 @@ def list_products(best_buy):
     print("\n------")
     enumerated_products = enumerate(best_buy.get_all_products(), start=1)
     for number, product in enumerated_products:
-        print(f"{number}: ", end="")
-        product.show()
+        print(f"{number}: {product}")
     print("------")
 
 

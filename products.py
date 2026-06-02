@@ -20,6 +20,33 @@ class Product:
         self.active = True
         self.promotion = None
 
+    def __str__(self):
+        """
+        Returns the string representation of the product.
+        Replaces the old show() method.
+        """
+        promo_text = ""
+        if self.promotion is not None:
+            promo_text = f" (Promotion: {self.promotion.name})"
+        return(f"{self.name}, Price: ${self.price:,.2f}, "
+               f"Quantity: {self.quantity:,.0f}{promo_text}")
+
+    def __gt__(self, other):
+        """
+        Allows using the > operator to compare the prices of two products.
+        """
+        if not isinstance(other, Product):
+            return NotImplemented
+        return self.price > other.price
+
+    def __lt__(self, other):
+        """
+        Allows using the < operator to compare the prices of two products.
+        """
+        if not isinstance(other, Product):
+            return NotImplemented
+        return self.price < other.price
+
     def get_promotion(self):
         return self.promotion
 
@@ -45,13 +72,6 @@ class Product:
 
     def deactivate(self):
         self.active = False
-
-    def show(self):
-        promo_text = ""
-        if self.promotion is not None:
-            promo_text = f" (Promotion: {self.promotion.name})"
-        print(f"{self.name}, Price: ${self.price:,.2f}, "
-              f"Quantity: {self.quantity:,.0f}{promo_text}")
 
     def check_quantity(self, quantity):
         """ Verifies if the quantity as allowed to be bought """
@@ -88,6 +108,15 @@ class NonStockedProduct(Product):
         super().__init__(name, price, 1)
         self.quantity = 0
 
+    def __str__(self):
+        # Overriding to show it's a non-stocked item
+        promo_text = ""
+        if self.promotion is not None:
+            promo_text = f" (Promotion: {self.promotion.name})"
+        return(f"{self.name}, Price: ${self.price:,.2f}, "
+               f"Quantity: Unlimited (Non-Stocked){promo_text}")
+
+
     def check_quantity(self, quantity):
         # Digitale Produkte haben unendlich viel "Bestand".
         # Wir prüfen hier also nur noch, ob die Eingabe überhaupt Sinn macht (> 0).
@@ -105,15 +134,6 @@ class NonStockedProduct(Product):
         # because this product has infinite digital stock.
         return quantity * self.price
 
-    def show(self):
-        # Overriding to show it's a non-stocked item
-
-        promo_text = ""
-        if self.promotion is not None:
-            promo_text = f" (Promotion: {self.promotion.name})"
-        print(f"{self.name}, Price: ${self.price:,.2f}, "
-              f"Quantity: Unlimited (Non-Stocked){promo_text}")
-
 
 class LimitedProduct(Product):
     """
@@ -123,6 +143,11 @@ class LimitedProduct(Product):
     def __init__(self, name, price, quantity, maximum):
         super().__init__(name, price, quantity)
         self.maximum = maximum
+
+    def __str__(self):
+        # Overriding to display the maximum limit
+        return(f"{self.name}, Price: ${self.price:,.2f}, "
+               f"Quantity: {self.quantity:,.0f}, Max per order: {self.maximum}")
 
     def check_quantity(self, quantity):
         # Check for limited products
@@ -139,12 +164,6 @@ class LimitedProduct(Product):
         # The parent class handles the standard validation and quantity adjusting
         return super().buy(quantity)
 
-    def show(self):
-        # Overriding to display the maximum limit
-        print(
-            f"{self.name}, Price: ${self.price:,.2f}, "
-            f"Quantity: {self.quantity:,.0f}, Max per order: {self.maximum}")
-
 
 def main():
     try:
@@ -155,11 +174,11 @@ def main():
         print(mac.buy(100))
         print(mac.is_active())
 
-        bose.show()
-        mac.show()
+        print(bose)
+        print(mac)
 
         bose.set_quantity(1000)
-        bose.show()
+        print(bose)
 
         product_list = [
                 Product("MacBook Air M2", price=1450, quantity=100),
@@ -171,7 +190,10 @@ def main():
                                     maximum=1)
             ]
         for product in product_list:
-            product.show()
+            print(product)
+
+        print(mac > bose)
+        print(mac < bose)
 
     except ValueError as e:
         print(e)
